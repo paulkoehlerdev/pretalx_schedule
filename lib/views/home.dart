@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -28,18 +29,18 @@ class _HomeViewState extends State<HomeView> {
     ),
   ];
 
-  List<BottomNavigationBarItem> _tabs(int active) => [
+  List<BottomNavigationBarItem> _tabs(BuildContext context, int active) => [
         BottomNavigationBarItem(
           icon: active == 0
               ? const Icon(Icons.calendar_today)
               : const Icon(Icons.calendar_today_outlined),
-          label: 'Schedule',
+          label: AppLocalizations.of(context)!.schedule,
         ),
         BottomNavigationBarItem(
           icon: active == 1
               ? const Icon(Icons.star)
               : const Icon(Icons.star_border),
-          label: 'Favs',
+          label: AppLocalizations.of(context)!.favorites,
         ),
       ];
 
@@ -88,7 +89,7 @@ class _HomeViewState extends State<HomeView> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        items: _tabs(_selectedIndex),
+        items: _tabs(context, _selectedIndex),
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),

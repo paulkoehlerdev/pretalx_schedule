@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:pretalx_schedule/cubit/instances.dart';
 import 'package:pretalx_schedule/views/home.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() => runApp(const App());
 
@@ -16,6 +17,7 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'Pretalx Schedule',
         localizationsDelegates: [
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
