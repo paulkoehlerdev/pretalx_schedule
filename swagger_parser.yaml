@@ -1,0 +1,3 @@
+swagger_parser:
+  schema_path: oapi.yaml
+  output_directory: lib/api

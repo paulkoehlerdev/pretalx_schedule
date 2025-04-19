@@ -1,0 +1,747 @@
+openapi: 3.0.0
+info:
+  title: Conference Management API
+  version: 3.0.0
+  description: API for managing conference events, submissions, talks, speakers, and more.
+
+servers:
+  - url: https://cfp.eh22.easterhegg.eu
+    description: Easterhegg 2025 Fahrplan
+
+paths:
+  /api/events/:
+    get:
+      responses:
+        '200':
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Events'
+        '401':
+          description: Authentication failure
+        '403':
+          description: The requested event does not exist or you have no permission to view it
+
+  /api/events/{event}/:
+    get:
+      parameters:
+        - name: event
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Event slug
+      summary: Get details of a specific event
+      responses:
+        '200':
+          description: Event details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '401':
+          description: Authentication failure
+        '403':
+          description: The requested event does not exist or you have no permission to view it
+
+  /api/events/{event}/submissions:
+    get:
+      summary: List submissions for an event
+      parameters:
+        - $ref: '#/components/parameters/EventParam'
+        - $ref: '#/components/parameters/PageParam'
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Search through submissions by title and speaker name
+        - name: anon
+          in: query
+          schema:
+            type: string
+          description: Receive anonymised data
+        - name: submission_type
+          in: query
+          schema:
+            type: string
+          description: Filter by submission type
+        - name: state
+          in: query
+          schema:
+            type: string
+          description: Filter by submission state
+        - name: questions
+          in: query
+          schema:
+            type: string
+          description: Comma separated list of question IDs or "all"
+        - name: is_featured
+          in: query
+          schema:
+            type: boolean
+          description: Filter by featured status
+      responses:
+        '200':
+          description: List of submissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submissions'
+
+  /api/events/{event}/talks:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/EventParam'
+        - $ref: '#/components/parameters/PageParam'
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Search through talks
+        - name: submission_type
+          in: query
+          schema:
+            type: string
+        - name: questions
+          in: query
+          schema:
+            type: string
+          description: Comma separated list of question IDs or "all"
+      summary: List talks in the current schedule
+      responses:
+        '200':
+          description: List of talks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Talks'
+
+  /api/events/{event}/speakers:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/EventParam'
+        - $ref: '#/components/parameters/PageParam'
+        - name: q
+          in: query
+          schema:
+            type: string
+          description: Search through speakers by name
+        - name: questions
+          in: query
+          schema:
+            type: string
+          description: Comma separated list of question IDs or "all"
+      summary: List speakers
+      responses:
+        '200':
+          description: List of speakers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Speakers'
+
+  /api/events/{event}/reviews:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/EventParam'
+        - $ref: '#/components/parameters/PageParam'
+        - name: submission__code
+          in: query
+          schema:
+            type: string
+          description: Filter reviews by submission code
+      summary: List reviews
+      responses:
+        '200':
+          description: List of reviews
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reviews'
+
+  /api/events/{event}/rooms:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/EventParam'
+        - $ref: '#/components/parameters/PageParam'
+      summary: List rooms
+      responses:
+        '200':
+          description: List of rooms
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rooms'
+
+  /api/events/{event}/questions:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/EventParam'
+        - $ref: '#/components/parameters/PageParam'
+        # ... rest of parameters
+        - name: target
+          in: query
+          schema:
+            type: string
+          description: Filter by question target
+        - name: variant
+          in: query
+          schema:
+            type: string
+          description: Filter by question variant
+      summary: List questions
+      responses:
+        '200':
+          description: List of questions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Questions'
+
+  /api/events/{event}/answers:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/EventParam'
+        - $ref: '#/components/parameters/PageParam'
+        - name: question
+          in: query
+          schema:
+            type: string
+          description: Filter by question ID
+        - name: submission
+          in: query
+          schema:
+            type: string
+          description: Filter by submission code
+        - name: review
+          in: query
+          schema:
+            type: string
+          description: Filter by review ID
+        - name: person
+          in: query
+          schema:
+            type: string
+          description: Filter by person code
+      summary: List answers
+      responses:
+        '200':
+          description: List of answers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answers'
+
+  /api/events/{event}/tags:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/EventParam'
+        - $ref: '#/components/parameters/PageParam'
+      summary: List tags
+      responses:
+        '200':
+          description: List of tags
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tags'
+
+components:
+  parameters:
+    EventParam:
+      name: event
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Event slug
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+      description: Page number for pagination
+
+  securitySchemes:
+    TokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: API token for authentication
+
+  schemas:
+    Events:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+      required:
+        - results
+        - count
+
+    Event:
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Internationalizable"
+        slug:
+          type: string
+        is_public:
+          type: boolean
+        date_from:
+          type: string
+          format: date-time
+        date_to:
+          type: string
+          format: date-time
+        timezone:
+          type: string
+        urls:
+          type: object
+          properties:
+            base:
+              type: string
+            schedule:
+              type: string
+            login:
+              type: string
+            feed:
+              type: string
+
+    Submissions:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Submission'
+      required:
+        - results
+        - count
+
+    Submission:
+      type: object
+      properties:
+        code:
+          type: string
+        speakers:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/Speaker'
+        created:
+          type: string
+          format: date-time
+          nullable: true
+        title:
+          type: string
+        submission_type:
+          $ref: '#/components/schemas/Internationalizable'
+        submission_type_id:
+          type: integer
+        track:
+          $ref: '#/components/schemas/Internationalizable'
+        track_id:
+          type: integer
+        state:
+          type: string
+          enum: [submitted, accepted, rejected, confirmed]
+        abstract:
+          type: string
+        description:
+          type: string
+        duration:
+          type: integer
+        do_not_record:
+          type: boolean
+        is_featured:
+          type: boolean
+        content_locale:
+          type: string
+        slot:
+          $ref: '#/components/schemas/Slot'
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+        notes:
+          type: string
+          nullable: true
+        internal_notes:
+          type: string
+          nullable: true
+        tags:
+          type: array
+          nullable: true
+          items:
+            type: string
+        tag_ids:
+          type: array
+          nullable: true
+          items:
+            type: integer
+
+    Talks:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Talk'
+      required:
+        - results
+        - count
+
+    Talk:
+      allOf:
+        - $ref: '#/components/schemas/Submission'
+
+    Speakers:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Speaker'
+      required:
+        - results
+        - count
+
+    Speaker:
+      type: object
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        biography:
+          type: string
+          nullable: true
+        submissions:
+          type: array
+          nullable: true
+          items:
+            type: string
+        avatar:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        availabilities:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/Availability'
+        answers:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/Answer'
+
+    Reviews:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Review'
+      required:
+        - results
+        - count
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+        submission:
+          type: string
+        user:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+        text:
+          type: string
+        score:
+          type: integer
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+
+    Rooms:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Room'
+      required:
+        - results
+        - count
+
+    Room:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: object
+          additionalProperties:
+            type: string
+        description:
+          type: object
+          additionalProperties:
+            type: string
+        capacity:
+          type: integer
+        position:
+          type: integer
+        speaker_info:
+          type: object
+          additionalProperties:
+            type: string
+        availabilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Availability'
+
+    Questions:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+      required:
+        - results
+        - count
+
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+        variant:
+          type: string
+          enum: [number, string, text, boolean, file, choices, multiple_choice]
+        target:
+          type: string
+          enum: [speaker, submission, reviewer]
+        question:
+          type: object
+          additionalProperties:
+            type: string
+        help_text:
+          type: object
+          additionalProperties:
+            type: string
+        required:
+          type: boolean
+        question_required:
+          type: string
+          enum: [optional, required, after_deadline]
+        deadline:
+          type: string
+          format: date-time
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              option:
+                type: object
+                additionalProperties:
+                  type: string
+
+    Answers:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+      required:
+        - results
+        - count
+
+    Answer:
+      type: object
+      properties:
+        id:
+          type: integer
+        question:
+          type: object
+          properties:
+            id:
+              type: integer
+            question:
+              type: object
+              additionalProperties:
+                type: string
+        answer:
+          type: string
+        answer_file:
+          type: string
+        submission:
+          type: string
+        review:
+          type: integer
+        person:
+          type: string
+        options:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              option:
+                type: string
+
+    Tags:
+      type: object
+      properties:
+        count:
+          type: integer
+        next:
+          type: string
+          nullable: true
+        previous:
+          type: string
+          nullable: true
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      required:
+        - results
+        - count
+
+    Tag:
+      type: object
+      properties:
+        tag:
+          type: string
+        description:
+          type: object
+          additionalProperties:
+            type: string
+        color:
+          type: string
+
+    Slot:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        room:
+          $ref: '#/components/schemas/Internationalizable'
+        room_id:
+          type: integer
+
+    Availability:
+      type: object
+      properties:
+        id:
+          type: integer
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        allDay:
+          type: boolean
+
+    Internationalizable:
+      anyOf:
+        - type: object
+          additionalProperties:
+            type: string
+            description: Multi-lingual event name
+        - type: string

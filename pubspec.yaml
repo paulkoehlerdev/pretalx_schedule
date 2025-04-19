@@ -1,23 +1,31 @@
-name: pretalx_scedule
-description: "This is an app that consumes the pretalx api of your pretalx instance and shows you the scedule information."
-publish_to: 'none'
+name: pretalx_schedule
+description: A minimal Flutter application.
+publish_to: 'none' # since it's not a package for pub.dev
 
-version: 1.0.0+1
+version: 0.1.0+1
 
 environment:
-  sdk: ^3.7.2
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
+  dio: ^5.8.0
+  retrofit: ^4.4.2
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^5.0.0
+  
+  build_runner: ^2.4.8
+  json_serializable:
+  freezed: ^3.0.6
+  freezed_annotation: ^3.0.0
+  retrofit_generator: ^9.1.9
+  json_annotation: ^4.9.0
+  swagger_parser: ^1.22.1
 
 flutter:
   uses-material-design: true

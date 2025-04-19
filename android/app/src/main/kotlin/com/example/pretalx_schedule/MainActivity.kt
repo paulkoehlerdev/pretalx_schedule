@@ -1,4 +1,4 @@
-package dev.pkoehler.pretalx_scedule
+package com.example.pretalx_schedule
 
 import io.flutter.embedding.android.FlutterActivity
 
