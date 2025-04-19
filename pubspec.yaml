@@ -19,6 +19,8 @@ dependencies:
 
   json_annotation: ^4.9.0
   equatable: ^2.0.7
+  flutter_svg: ^2.1.0
+  path_provider: ^2.1.5
 
   bloc: ^9.0.0
   flutter_bloc: ^9.1.0
@@ -34,3 +36,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  assets:
+    - assets/logo_inverted.svg

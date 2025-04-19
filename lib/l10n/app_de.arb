@@ -1,4 +1,8 @@
 {
   "schedule": "Fahrplan",
-  "favorites": "Favoriten"
+  "favorites": "Favoriten",
+  "drawerHeader": "Pretalx Fahrplan",
+  "refresh": "Neu Laden",
+  "instances": "Instanzen",
+  "addInstance": "Instanz hinzufügen"
 }

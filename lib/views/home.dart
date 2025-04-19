@@ -1,98 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:pretalx_schedule/components/scaffold.dart';
+import 'package:pretalx_schedule/views/calendar.dart';
+import 'package:pretalx_schedule/views/favorite.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  static const List<Widget> _pages = [
-    Center(
-      child: Text("test1"),
-    ),
-    Center(
-      child: Text("test2"),
-    ),
-    Center(
-      child: Text("test3"),
-    ),
-  ];
-
-  List<BottomNavigationBarItem> _tabs(BuildContext context, int active) => [
-        BottomNavigationBarItem(
-          icon: active == 0
-              ? const Icon(Icons.calendar_today)
-              : const Icon(Icons.calendar_today_outlined),
-          label: AppLocalizations.of(context)!.schedule,
-        ),
-        BottomNavigationBarItem(
-          icon: active == 1
-              ? const Icon(Icons.star)
-              : const Icon(Icons.star_border),
-          label: AppLocalizations.of(context)!.favorites,
-        ),
-      ];
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('My App'),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
-          },
+    return CustomScaffold(
+      pages: [
+        NavigationBarPage(
+          icon: Icons.calendar_today_outlined,
+          label: AppLocalizations.of(context)!.schedule,
+          selectedIcon: Icons.calendar_today,
+          content: const CalendarView(),
         ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text(
-                'App Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('Item 1'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Item 2'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
+        NavigationBarPage(
+          icon: Icons.star_outline,
+          label: AppLocalizations.of(context)!.favorites,
+          selectedIcon: Icons.star,
+          content: const FavoriteView(),
         ),
-      ),
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: _tabs(context, _selectedIndex),
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-      ),
+      ],
     );
   }
 }

@@ -1,4 +1,8 @@
 {
   "schedule": "Schedule",
-  "favorites": "Favorites"
+  "favorites": "Favorites",
+  "drawerHeader": "Pretalx Schedule",
+  "refresh": "Refresh",
+  "instances": "Instances",
+  "addInstance": "Connect Instance"
 }
