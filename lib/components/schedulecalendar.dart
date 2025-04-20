@@ -6,7 +6,7 @@ import 'package:pretalx_schedule/api/models/schedule.dart';
 class ScheduleCalendar extends StatelessWidget {
   final ApiSchedule? schedule;
 
-  ScheduleCalendar({this.schedule});
+  const ScheduleCalendar({this.schedule});
 
   @override
   Widget build(BuildContext context) {
