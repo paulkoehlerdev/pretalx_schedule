@@ -8,6 +8,7 @@ class ErrorWithStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrintStack(stackTrace: stack, label: error);
     return Card(
       margin: const EdgeInsets.all(16.0),
       child: Padding(

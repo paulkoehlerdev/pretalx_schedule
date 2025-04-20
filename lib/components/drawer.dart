@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pretalx_schedule/cubit/instancecollection.dart';
 import 'package:pretalx_schedule/model/instancecollection.dart';
+import 'package:pretalx_schedule/views/settings.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -28,6 +29,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             ...buildActionTiles(context),
             ...buildInstanceTiles(context, collection),
+            ...buildBottomActionTiles(context),
           ],
         );
       }),
@@ -41,10 +43,22 @@ class CustomDrawer extends StatelessWidget {
         title: Text(AppLocalizations.of(context)!.refresh),
         onTap: () {},
       ),
+    ];
+  }
+
+  List<Widget> buildBottomActionTiles(BuildContext context) {
+    return [
+      const Divider(),
       ListTile(
-        leading: const Icon(Icons.add_link),
-        title: Text(AppLocalizations.of(context)!.addInstance),
-        onTap: () {},
+        leading: const Icon(Icons.settings),
+        title: Text(AppLocalizations.of(context)!.settings),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const Settings(),
+            ),
+          );
+        },
       ),
     ];
   }
@@ -59,14 +73,30 @@ class CustomDrawer extends StatelessWidget {
 
     return [
       const Divider(),
-      Padding(
-        padding: const EdgeInsets.all(12),
-        child: Text(AppLocalizations.of(context)!.instances,
-            style: Theme.of(context).textTheme.titleSmall),
+      Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(AppLocalizations.of(context)!.events,
+                style: Theme.of(context).textTheme.titleSmall),
+          ),
+          Expanded(child: Container())
+        ],
       ),
-      ...collection.instances.map((i) => ListTile(
-            title: Text(i.name),
-          ))
+      ...collection.visibleEvents
+          .map(
+            (i) => RadioListTile(
+              value: i.slug,
+              groupValue: collection.selectedEventSlug,
+              onChanged: (String? value) {
+                if (value != null) {
+                  context.read<InstanceCollectionCubit>().select(value);
+                }
+              },
+              title: Text(i.name),
+            ),
+          )
+          .toList()
     ];
   }
 }

@@ -3,6 +3,16 @@
   "favorites": "Favorites",
   "drawerHeader": "Pretalx Schedule",
   "refresh": "Refresh",
+  "events": "Events",
   "instances": "Instances",
-  "addInstance": "Connect Instance"
+  "addInstance": "Connect Instance",
+  "settings": "Settings",
+  "settingsGeneral": "General",
+  "name": "Name",
+  "url": "URL",
+  "loadEvents": "Load Events",
+  "save": "Save",
+  "editInstance": "Edit: ",
+  "eventsOfInterest": "Select events you are interested in:",
+  "needToReloadEventsError": "You need to reload events before saving."
 }

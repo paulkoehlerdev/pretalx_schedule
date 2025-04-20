@@ -8,15 +8,14 @@ part of 'instancecollection.dart';
 
 InstanceCollection _$InstanceCollectionFromJson(Map<String, dynamic> json) =>
     InstanceCollection(
-      selected: (json['selected'] as num?)?.toInt() ?? 0,
-      instances: (json['instances'] as List<dynamic>?)
-              ?.map((e) => Instance.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
+      selectedEventSlug: json['selectedEventSlug'] as String?,
+      instances: (json['instances'] as List<dynamic>)
+          .map((e) => Instance.fromJson(e as Map<String, dynamic>))
+          .toSet(),
     );
 
 Map<String, dynamic> _$InstanceCollectionToJson(InstanceCollection instance) =>
     <String, dynamic>{
-      'selected': instance.selected,
-      'instances': instance.instances,
+      'selectedEventSlug': instance.selectedEventSlug,
+      'instances': instance.instances.toList(),
     };

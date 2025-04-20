@@ -3,6 +3,16 @@
   "favorites": "Favoriten",
   "drawerHeader": "Pretalx Fahrplan",
   "refresh": "Neu Laden",
+  "events": "Veranstaltungen",
   "instances": "Instanzen",
-  "addInstance": "Instanz hinzufügen"
+  "addInstance": "Instanz hinzufügen",
+  "settings": "Einstellungen",
+  "settingsGeneral": "Allgemein",
+  "name": "Name",
+  "url": "URL",
+  "loadEvents": "Events Laden",
+  "save": "Speichern",
+  "editInstance": "Bearbeiten: ",
+  "eventsOfInterest": "Wähle Events aus, die dich interessieren:",
+  "needToReloadEventsError": "Du musst die Events neu laden, bevor du speichern kannst."
 }

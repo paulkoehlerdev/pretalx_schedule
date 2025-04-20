@@ -1,29 +1,38 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pretalx_schedule/model/event.dart';
 import 'package:pretalx_schedule/model/instance.dart';
 
 part 'instancecollection.g.dart';
 
 @JsonSerializable()
 class InstanceCollection extends Equatable {
-  int selected;
-  final List<Instance> instances;
+  final String? selectedEventSlug;
+  final Set<Instance> instances;
 
-  InstanceCollection({this.selected = 0, this.instances = const []});
+  InstanceCollection({this.selectedEventSlug, required this.instances});
 
   factory InstanceCollection.fromJson(Map<String, dynamic> json) =>
       _$InstanceCollectionFromJson(json);
 
-  void select(int i) {
-    selected = i;
+  InstanceCollection copyWith({
+    String? selectedEventSlug,
+    Set<Instance>? instances,
+  }) =>
+      InstanceCollection(
+          selectedEventSlug: selectedEventSlug ?? this.selectedEventSlug,
+          instances: instances ?? this.instances);
+
+  bool hasSlug(String slug) {
+    return instances
+        .any((instance) => instance.events.any((event) => event.slug == slug));
   }
 
-  void add(Instance i) {
-    instances.add(i);
-  }
+  List<Event> get visibleEvents =>
+      instances.expand((i) => i.events).where((e) => e.visible).toList();
 
   @override
-  List<Object> get props => [selected, instances];
+  List<Object> get props => [selectedEventSlug ?? "", instances];
 
   Map<String, dynamic> toJson() => _$InstanceCollectionToJson(this);
 }
