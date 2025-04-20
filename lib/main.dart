@@ -26,8 +26,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => InstanceCollectionCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => InstanceCollectionCubit(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Pretalx Schedule',
         localizationsDelegates: [

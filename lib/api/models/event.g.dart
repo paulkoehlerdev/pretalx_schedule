@@ -6,7 +6,7 @@ part of 'event.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ApiEvent _$ApiEventFromJson(Map<String, dynamic> json) => ApiEvent(
+ApiBaseEvent _$ApiBaseEventFromJson(Map<String, dynamic> json) => ApiBaseEvent(
       name: Map<String, String>.from(json['name'] as Map),
       slug: json['slug'] as String,
       isPublic: json['is_public'] as bool,
@@ -16,7 +16,8 @@ ApiEvent _$ApiEventFromJson(Map<String, dynamic> json) => ApiEvent(
       urls: Map<String, String>.from(json['urls'] as Map),
     );
 
-Map<String, dynamic> _$ApiEventToJson(ApiEvent instance) => <String, dynamic>{
+Map<String, dynamic> _$ApiBaseEventToJson(ApiBaseEvent instance) =>
+    <String, dynamic>{
       'name': instance.name,
       'slug': instance.slug,
       'is_public': instance.isPublic,

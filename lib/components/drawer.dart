@@ -77,8 +77,10 @@ class CustomDrawer extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(12),
-            child: Text(AppLocalizations.of(context)!.events,
-                style: Theme.of(context).textTheme.titleSmall),
+            child: Text(
+              AppLocalizations.of(context)!.events,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
           ),
           Expanded(child: Container())
         ],
@@ -94,6 +96,7 @@ class CustomDrawer extends StatelessWidget {
                 }
               },
               title: Text(i.name),
+              subtitle: Text(i.slug),
             ),
           )
           .toList()

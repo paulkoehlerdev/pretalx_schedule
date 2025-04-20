@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'event.g.dart';
 
 @JsonSerializable()
-class ApiEvent extends Equatable {
+class ApiBaseEvent extends Equatable {
   final Map<String, String> name;
   final String slug;
   @JsonKey(name: 'is_public')
@@ -16,7 +16,7 @@ class ApiEvent extends Equatable {
   final String timezone;
   final Map<String, String> urls;
 
-  const ApiEvent({
+  const ApiBaseEvent({
     required this.name,
     required this.slug,
     required this.isPublic,
@@ -26,10 +26,10 @@ class ApiEvent extends Equatable {
     required this.urls,
   });
 
-  factory ApiEvent.fromJson(Map<String, dynamic> json) =>
-      _$ApiEventFromJson(json);
+  factory ApiBaseEvent.fromJson(Map<String, dynamic> json) =>
+      _$ApiBaseEventFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ApiEventToJson(this);
+  Map<String, dynamic> toJson() => _$ApiBaseEventToJson(this);
 
   @override
   List<Object?> get props =>

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:pretalx_schedule/components/scaffold.dart';
-import 'package:pretalx_schedule/views/calendar.dart';
 import 'package:pretalx_schedule/views/favorite.dart';
+import 'package:pretalx_schedule/views/schedule.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -15,7 +15,7 @@ class HomeView extends StatelessWidget {
           icon: Icons.calendar_today_outlined,
           label: AppLocalizations.of(context)!.schedule,
           selectedIcon: Icons.calendar_today,
-          content: const CalendarView(),
+          content: const ScheduleView(),
         ),
         NavigationBarPage(
           icon: Icons.star_outline,

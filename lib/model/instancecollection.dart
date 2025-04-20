@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pretalx_schedule/model/event.dart';
+import 'package:pretalx_schedule/model/eventkey.dart';
 import 'package:pretalx_schedule/model/instance.dart';
 
 part 'instancecollection.g.dart';
@@ -26,6 +27,22 @@ class InstanceCollection extends Equatable {
   bool hasSlug(String slug) {
     return instances
         .any((instance) => instance.events.any((event) => event.slug == slug));
+  }
+
+  EventKey? get currentKey {
+    if (selectedEventSlug == null) {
+      return null;
+    }
+
+    for (var instance in instances) {
+      for (var event in instance.events) {
+        if (event.slug == selectedEventSlug) {
+          return EventKey(event: event, instance: instance);
+        }
+      }
+    }
+
+    return null;
   }
 
   List<Event> get visibleEvents =>
