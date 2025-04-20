@@ -6,13 +6,15 @@ import 'package:pretalx_schedule/api/models/schedule.dart';
 class ScheduleCalendar extends StatelessWidget {
   final ApiSchedule? schedule;
 
-  const ScheduleCalendar({super.key, this.schedule});
+  ScheduleCalendar({this.schedule});
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: schedule == null
-          ? const _DayCalendar()
+          ? const _DayCalendar(
+              events: {},
+            )
           : Column(
               children: schedule!.conference.days.expand(buildDay).toList(),
             ),
@@ -20,12 +22,19 @@ class ScheduleCalendar extends StatelessWidget {
   }
 
   List<Widget> buildDay(ApiDay day) {
-    DateTime start = DateTime.parse(day.dayEnd);
-    DateTime end = DateTime.parse(day.dayStart);
+    final Map<String, List<Widget>> events = {};
+    final Map<String, Color> trackColors = {};
+
+    for (var track in schedule!.conference.tracks) {
+      trackColors[track.name] = parseHexColor(track.color);
+    }
+
+    DateTime start = DateTime.parse(day.dayEnd).toLocal();
+    DateTime end = DateTime.parse(day.dayStart).toLocal();
 
     for (var room in day.rooms.entries) {
       for (var event in room.value) {
-        DateTime eventStart = DateTime.parse(event.date);
+        DateTime eventStart = DateTime.parse(event.date).toLocal();
         if (eventStart.isBefore(start)) {
           start = eventStart;
         }
@@ -36,6 +45,21 @@ class ScheduleCalendar extends StatelessWidget {
         if (eventEnd.isAfter(end)) {
           end = eventEnd;
         }
+
+        int relativeEventStartMinutes = eventStart.difference(start).inMinutes;
+
+        if (!events.keys.contains(event.room)) {
+          events[event.room] = [];
+        }
+
+        events[event.room]!.add(
+          _Event(
+            startMinutes: relativeEventStartMinutes + 90,
+            durationMinutes: eventDuration.inMinutes,
+            title: event.title,
+            color: trackColors[event.track],
+          ),
+        );
       }
     }
 
@@ -46,9 +70,14 @@ class ScheduleCalendar extends StatelessWidget {
         date: start,
         index: day.index,
       ),
-      _DayCalendar(
-        startHour: start.hour - 1,
-        endHour: start.hour + dayDuration.inHours + 1,
+      Stack(
+        children: [
+          _DayCalendar(
+            events: events,
+            startHour: start.hour - 1,
+            endHour: start.hour + dayDuration.inHours + 1,
+          ),
+        ],
       ),
     ];
   }
@@ -59,6 +88,12 @@ class ScheduleCalendar extends StatelessWidget {
       hours: int.parse(hours),
       minutes: int.parse(minutes),
     );
+  }
+
+  Color parseHexColor(String hexColor) {
+    final hex = hexColor.replaceAll('#', '');
+    final value = int.parse(hex, radix: 16);
+    return Color(hex.length == 6 ? 0xFF000000 + value : value);
   }
 }
 
@@ -85,13 +120,56 @@ class _DayHeader extends StatelessWidget {
   }
 }
 
+class _Event extends StatelessWidget {
+  final double cellHeight;
+  final int durationMinutes;
+  final int startMinutes;
+  final String title;
+  final Color? color;
+
+  const _Event({
+    super.key,
+    required this.startMinutes,
+    required this.durationMinutes,
+    required this.title,
+    required this.color,
+    this.cellHeight = 60.0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 5.0,
+        right: 5.0,
+        top: (startMinutes / 60) * cellHeight,
+      ),
+      child: SizedBox(
+        height: cellHeight * (durationMinutes / 60),
+        child: Expanded(
+          child: Card(
+            color: color,
+            child: Expanded(
+              child: Center(
+                child: Text(title),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _DayCalendar extends StatelessWidget {
   final int startHour;
   final int endHour;
   final double cellHeight;
+  final Map<String, List<Widget>> events;
 
   const _DayCalendar({
     super.key,
+    required this.events,
     this.startHour = 0,
     this.endHour = 24,
     this.cellHeight = 60,
@@ -107,11 +185,50 @@ class _DayCalendar extends StatelessWidget {
           startHour: startHour,
           endHour: endHour,
         ),
-        _TimeGrid(
-          cellHeight: cellHeight,
-          countHours: endHour - startHour,
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  child: _TimeGrid(
+                    cellHeight: cellHeight,
+                    countHours: endHour - startHour,
+                  ),
+                ),
+                _EventGrid(events: events),
+              ],
+            ),
+          ),
         ),
       ],
+    );
+  }
+}
+
+class _EventGrid extends StatelessWidget {
+  final Map<String, List<Widget>> events;
+
+  const _EventGrid({
+    super.key,
+    required this.events,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return Row(
+      children: events.entries
+          .map((entry) => SizedBox(
+                width: screenWidth / 1.5,
+                child: Stack(
+                  children: entry.value,
+                ),
+              ))
+          .toList(),
     );
   }
 }
@@ -161,19 +278,17 @@ class _TimeGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Column(
-        children: List.generate(
-          countHours,
-          (hour) {
-            return SizedBox(
-              height: cellHeight,
-              child: const Center(
-                child: Divider(),
-              ),
-            );
-          },
-        ),
+    return Column(
+      children: List.generate(
+        countHours,
+        (hour) {
+          return SizedBox(
+            height: cellHeight,
+            child: const Center(
+              child: Divider(),
+            ),
+          );
+        },
       ),
     );
   }
