@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pretalx_schedule/api/api.dart';
 import 'package:pretalx_schedule/components/error.dart';
-import 'package:pretalx_schedule/components/schedulecalendar.dart';
+import 'package:pretalx_schedule/components/schedule.dart';
 import 'package:pretalx_schedule/cubit/instancecollection.dart';
 import 'package:pretalx_schedule/model/instancecollection.dart';
 
@@ -25,7 +25,8 @@ class ScheduleView extends StatelessWidget {
           future: Api.loadFullEvent(eKey),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return ScheduleCalendar(schedule: snapshot.data!);
+              // return ScheduleCalendar(schedule: snapshot.data!);
+              return Schedule(schedule: snapshot.data!);
             }
 
             if (snapshot.hasError) {
@@ -38,7 +39,7 @@ class ScheduleView extends StatelessWidget {
             return const Stack(
               children: [
                 LinearProgressIndicator(),
-                ScheduleCalendar(),
+                // ScheduleCalendar(),
               ],
             );
           },

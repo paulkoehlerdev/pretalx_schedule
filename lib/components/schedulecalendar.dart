@@ -146,14 +146,10 @@ class _Event extends StatelessWidget {
       ),
       child: SizedBox(
         height: cellHeight * (durationMinutes / 60),
-        child: Expanded(
-          child: Card(
-            color: color,
-            child: Expanded(
-              child: Center(
-                child: Text(title),
-              ),
-            ),
+        child: Card(
+          color: color,
+          child: Center(
+            child: Text(title),
           ),
         ),
       ),
