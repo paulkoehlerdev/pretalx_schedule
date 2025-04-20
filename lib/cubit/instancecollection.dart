@@ -6,10 +6,11 @@ class InstanceCollectionCubit extends HydratedCubit<InstanceCollection> {
   InstanceCollectionCubit()
       : super(InstanceCollection(instances: Set<Instance>()));
 
-  void add(Instance i) => emit(state.copyWith(
+  void update(Instance? old, Instance replacement) => emit(state.copyWith(
         instances: Set.of(state.instances)
-          ..removeWhere((e) => e.url == i.url)
-          ..add(i),
+          ..removeWhere((e) => old != null && e.url == old.url)
+          ..removeWhere((e) => e.url == replacement.url)
+          ..add(replacement),
       ));
 
   void remove(String url) => emit(state.copyWith(

@@ -27,23 +27,12 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
             ),
-            ...buildActionTiles(context),
             ...buildInstanceTiles(context, collection),
             ...buildBottomActionTiles(context),
           ],
         );
       }),
     );
-  }
-
-  List<Widget> buildActionTiles(BuildContext context) {
-    return [
-      ListTile(
-        leading: const Icon(Icons.refresh),
-        title: Text(AppLocalizations.of(context)!.refresh),
-        onTap: () {},
-      ),
-    ];
   }
 
   List<Widget> buildBottomActionTiles(BuildContext context) {
@@ -72,7 +61,6 @@ class CustomDrawer extends StatelessWidget {
     }
 
     return [
-      const Divider(),
       Row(
         children: [
           Padding(

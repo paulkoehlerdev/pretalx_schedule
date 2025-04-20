@@ -85,6 +85,6 @@ class Settings extends StatelessWidget {
       return;
     }
 
-    context.read<InstanceCollectionCubit>().add(instance);
+    context.read<InstanceCollectionCubit>().update(oldInstance, instance);
   }
 }

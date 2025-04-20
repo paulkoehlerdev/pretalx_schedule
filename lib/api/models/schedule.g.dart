@@ -97,10 +97,14 @@ ApiDay _$ApiDayFromJson(Map<String, dynamic> json) => ApiDay(
                 .map((e) => ApiEvent.fromJson(e as Map<String, dynamic>))
                 .toList()),
       ),
+      dayStart: json['day_start'] as String,
+      dayEnd: json['day_end'] as String,
     );
 
 Map<String, dynamic> _$ApiDayToJson(ApiDay instance) => <String, dynamic>{
       'date': instance.date,
+      'day_start': instance.dayStart,
+      'day_end': instance.dayEnd,
       'index': instance.index,
       'rooms': instance.rooms
           .map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList())),

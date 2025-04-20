@@ -14,5 +14,6 @@
   "save": "Speichern",
   "editInstance": "Bearbeiten: ",
   "eventsOfInterest": "Wähle Events aus, die dich interessieren:",
-  "needToReloadEventsError": "Du musst die Events neu laden, bevor du speichern kannst."
+  "needToReloadEventsError": "Du musst die Events neu laden, bevor du speichern kannst.",
+  "dayText": "Tag "
 }

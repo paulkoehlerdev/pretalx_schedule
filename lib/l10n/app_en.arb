@@ -14,5 +14,6 @@
   "save": "Save",
   "editInstance": "Edit: ",
   "eventsOfInterest": "Select events you are interested in:",
-  "needToReloadEventsError": "You need to reload events before saving."
+  "needToReloadEventsError": "You need to reload events before saving.",
+  "dayText": "Day "
 }

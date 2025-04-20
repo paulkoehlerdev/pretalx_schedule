@@ -35,7 +35,12 @@ class ScheduleView extends StatelessWidget {
               );
             }
 
-            return const LinearProgressIndicator();
+            return const Stack(
+              children: [
+                LinearProgressIndicator(),
+                ScheduleCalendar(),
+              ],
+            );
           },
         );
       },

@@ -122,6 +122,10 @@ class ApiRoom extends Equatable {
 @JsonSerializable(explicitToJson: true)
 class ApiDay extends Equatable {
   final String date;
+  @JsonKey(name: "day_start")
+  final String dayStart;
+  @JsonKey(name: "day_end")
+  final String dayEnd;
   final int index;
   final Map<String, List<ApiEvent>> rooms;
 
@@ -129,6 +133,8 @@ class ApiDay extends Equatable {
     required this.date,
     required this.index,
     required this.rooms,
+    required this.dayStart,
+    required this.dayEnd,
   });
 
   factory ApiDay.fromJson(Map<String, dynamic> json) => _$ApiDayFromJson(json);
@@ -136,7 +142,7 @@ class ApiDay extends Equatable {
   Map<String, dynamic> toJson() => _$ApiDayToJson(this);
 
   @override
-  List<Object?> get props => [date, index, rooms];
+  List<Object?> get props => [date, index, rooms, dayStart, dayEnd];
 }
 
 @JsonSerializable(explicitToJson: true)
