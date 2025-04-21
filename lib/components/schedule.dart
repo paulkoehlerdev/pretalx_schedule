@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:pretalx_schedule/api/models/schedule.dart';
+import 'package:pretalx_schedule/extensions/color.dart';
 import 'package:pretalx_schedule/extensions/datetime.dart';
 
 class Schedule extends StatefulWidget {
@@ -28,7 +29,7 @@ class _ScheduleState extends State<Schedule> {
   ScrollController _verticalScrollController = ScrollController();
   double? _scrollAlignment = null;
 
-  static const double _minHourHeight = 60;
+  static const double _minHourHeight = 120;
   static const double _maxHourHeight = 180;
 
   @override
@@ -56,6 +57,15 @@ class _ScheduleState extends State<Schedule> {
 
     Set<String> rooms =
         widget.schedule.conference.days.expand((day) => day.rooms.keys).toSet();
+
+    Map<String, Color> trackColors = Map.fromEntries(
+      widget.schedule.conference.tracks.map(
+        (track) => MapEntry(
+          track.name,
+          ColorExtension.fromHex(track.color),
+        ),
+      ),
+    );
 
     return Column(
       children: [
@@ -103,6 +113,7 @@ class _ScheduleState extends State<Schedule> {
                           timeBarWidth: _timeBarWidth,
                           roomWidth: roomWidth,
                           hourHeight: _hourHeight,
+                          trackColors: trackColors,
                           day: day,
                         ),
                       )
@@ -167,6 +178,7 @@ class _ScheduleDay extends StatelessWidget {
   final double timeBarWidth;
   final double roomWidth;
   final double hourHeight;
+  final Map<String, Color> trackColors;
 
   const _ScheduleDay({
     super.key,
@@ -175,6 +187,7 @@ class _ScheduleDay extends StatelessWidget {
     required this.timeBarWidth,
     required this.roomWidth,
     required this.hourHeight,
+    required this.trackColors,
   });
 
   @override
@@ -285,6 +298,7 @@ class _ScheduleDay extends StatelessWidget {
           roomWidth: roomWidth,
           roomId: index,
           title: event.title,
+          trackColor: trackColors[event.track]!,
         ));
       }
     }
@@ -432,16 +446,19 @@ class _EventItem extends StatelessWidget {
   final double roomWidth;
   final int roomId;
   final String title;
+  final Color trackColor;
 
-  const _EventItem(
-      {super.key,
-      required this.dayStart,
-      required this.eventStart,
-      required this.eventEnd,
-      required this.hourHeight,
-      required this.roomWidth,
-      required this.roomId,
-      required this.title});
+  const _EventItem({
+    super.key,
+    required this.dayStart,
+    required this.eventStart,
+    required this.eventEnd,
+    required this.hourHeight,
+    required this.roomWidth,
+    required this.roomId,
+    required this.title,
+    required this.trackColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -455,11 +472,31 @@ class _EventItem extends StatelessWidget {
       left: roomWidth * roomId.toDouble(),
       width: roomWidth,
       height: hourHeight * hourLength,
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Card(
-          color: Theme.of(context).colorScheme.surfaceContainerHigh,
-          child: Text(title),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+        clipBehavior: Clip.hardEdge,
+        color: Color.lerp(Theme.of(context).colorScheme.surfaceContainerHigh,
+            trackColor, 0.3),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 5,
+              color: trackColor,
+            ),
+            Expanded(
+                child: Padding(
+              padding: const EdgeInsets.only(
+                left: 5.0,
+                right: 5.0,
+                top: 2.5,
+              ),
+              child: Text(title),
+            )),
+          ],
         ),
       ),
     );
