@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +20,8 @@ class _ScheduleState extends State<Schedule> {
   late LinkedScrollControllerGroup _horizontalController;
   late ScrollController _roomBarController;
   late Map<int, ScrollController> _dayHorizontalControllers;
+
+  final _nowKey = GlobalKey();
 
   static const double _timeBarWidth = 70;
   double _hourHeight = 120;
@@ -175,17 +179,30 @@ class _ScheduleDay extends StatelessWidget {
 
     final diff = actualDayEnd.difference(actualDayStart).inHours.abs();
 
+    final isNowToday = DateTime.timestamp().isAfter(actualDayStart) &&
+        DateTime.timestamp().isBefore(actualDayEnd);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         _ScheduleDayHeader(date: dayStart, index: day.index),
         Row(
           children: [
-            _TimeColumn(
-              start: actualDayStart,
-              end: actualDayEnd,
-              width: timeBarWidth,
-              hourHeight: hourHeight,
+            Stack(
+              children: [
+                _TimeColumn(
+                  start: actualDayStart,
+                  end: actualDayEnd,
+                  width: timeBarWidth,
+                  hourHeight: hourHeight,
+                ),
+                _NowPointerTimeColumn(
+                  dayStart: actualDayStart,
+                  dayEnd: actualDayEnd,
+                  width: timeBarWidth,
+                  hourHeight: hourHeight,
+                ),
+              ],
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -198,7 +215,13 @@ class _ScheduleDay extends StatelessWidget {
                       hourHeight: hourHeight,
                       count: diff + 1,
                     ),
-                    ...generateEvents(actualDayStart)
+                    ...generateEvents(actualDayStart),
+                    _NowPointerGridLine(
+                      dayStart: actualDayStart,
+                      dayEnd: actualDayEnd,
+                      width: day.rooms.keys.length * roomWidth,
+                      hourHeight: hourHeight,
+                    ),
                   ],
                 ),
               ),
@@ -237,6 +260,137 @@ class _ScheduleDay extends StatelessWidget {
   }
 }
 
+class _NowPointerGridLine extends StatefulWidget {
+  final DateTime dayStart;
+  final DateTime dayEnd;
+  final double width;
+  final double hourHeight;
+
+  const _NowPointerGridLine({
+    super.key,
+    required this.dayStart,
+    required this.dayEnd,
+    required this.width,
+    required this.hourHeight,
+  });
+
+  @override
+  State<_NowPointerGridLine> createState() => _NowPointerGridLineState();
+}
+
+class _NowPointerGridLineState extends State<_NowPointerGridLine> {
+  DateTime _now = DateTime.timestamp().toLocal();
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _now = DateTime.now();
+
+    final secondsUntilNextMinute = 60 - _now.second;
+    _timer = Timer(Duration(seconds: secondsUntilNextMinute), () {
+      setState(() {
+        _now = DateTime.now();
+      });
+      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        setState(() {
+          _now = DateTime.now();
+        });
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_now.isAfter(widget.dayEnd)) {
+      return Container();
+    }
+
+    double hourSinceDayStart =
+        widget.dayStart.difference(_now).inMinutes.abs().toDouble() / 60.0;
+
+    DateFormat formatter = DateFormat('HH:mm');
+
+    return Positioned(
+      top: widget.hourHeight * hourSinceDayStart - widget.hourHeight / 2,
+      left: 0,
+      width: widget.width,
+      height: widget.hourHeight,
+      child: const Center(
+        child: Divider(
+          color: Colors.red,
+        ),
+      ),
+    );
+  }
+}
+
+class _NowPointerTimeColumn extends StatefulWidget {
+  final DateTime dayStart;
+  final DateTime dayEnd;
+  final double width;
+  final double hourHeight;
+
+  const _NowPointerTimeColumn({
+    super.key,
+    required this.dayStart,
+    required this.dayEnd,
+    required this.width,
+    required this.hourHeight,
+  });
+
+  @override
+  State<_NowPointerTimeColumn> createState() => _NowPointerTimeColumnState();
+}
+
+class _NowPointerTimeColumnState extends State<_NowPointerTimeColumn> {
+  DateTime _now = DateTime.timestamp().toLocal();
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _now = DateTime.now();
+
+    final secondsUntilNextMinute = 60 - _now.second;
+    _timer = Timer(Duration(seconds: secondsUntilNextMinute), () {
+      setState(() {
+        _now = DateTime.now();
+      });
+      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+        setState(() {
+          _now = DateTime.now();
+        });
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_now.isAfter(widget.dayEnd)) {
+      return Container();
+    }
+
+    double hourSinceDayStart =
+        widget.dayStart.difference(_now).inMinutes.abs().toDouble() / 60.0;
+
+    DateFormat formatter = DateFormat('HH:mm');
+
+    return Positioned(
+      top: widget.hourHeight * hourSinceDayStart - widget.hourHeight / 2,
+      left: 0,
+      width: widget.width,
+      height: widget.hourHeight,
+      child: Center(
+        child: Text(
+          formatter.format(_now),
+          style: const TextStyle(color: Colors.red),
+        ),
+      ),
+    );
+  }
+}
+
 class _EventItem extends StatelessWidget {
   final DateTime dayStart;
   final DateTime eventStart;
@@ -271,7 +425,7 @@ class _EventItem extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Card(
-          color: Colors.red,
+          color: Theme.of(context).colorScheme.surfaceContainerHigh,
           child: Text(title),
         ),
       ),
