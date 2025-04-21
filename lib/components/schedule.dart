@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:pretalx_schedule/api/models/schedule.dart';
 import 'package:pretalx_schedule/components/eventDialog.dart';
+import 'package:pretalx_schedule/components/peopleCard.dart';
 import 'package:pretalx_schedule/extensions/color.dart';
 import 'package:pretalx_schedule/extensions/datetime.dart';
 
@@ -300,6 +301,7 @@ class _ScheduleDay extends StatelessWidget {
           roomId: index,
           title: event.title,
           trackColor: trackColors[event.track]!,
+          people: event.persons,
           onTap: () {
             showDialog(
               context: context,
@@ -459,6 +461,7 @@ class _EventItem extends StatelessWidget {
   final String title;
   final Color trackColor;
   final VoidCallback? onTap;
+  final List<ApiPerson> people;
 
   const _EventItem({
     super.key,
@@ -470,6 +473,7 @@ class _EventItem extends StatelessWidget {
     required this.roomId,
     required this.title,
     required this.trackColor,
+    required this.people,
     this.onTap,
   });
 
@@ -503,14 +507,39 @@ class _EventItem extends StatelessWidget {
                 color: trackColor,
               ),
               Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 5.0,
-                  right: 5.0,
-                  top: 2.5,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 5.0,
+                    right: 5.0,
+                    top: 2.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 2,
+                          ),
+                          child: LayoutBuilder(builder: (context, constraints) {
+                            if (constraints.maxHeight < 40) return Container();
+
+                            return Column(
+                              children: [
+                                Expanded(child: Container()),
+                                PeopleCard(people: people),
+                              ],
+                            );
+                          }),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Text(title),
-              )),
+              ),
             ],
           ),
         ),
