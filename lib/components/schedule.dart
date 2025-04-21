@@ -312,7 +312,7 @@ class _NowPointerGridLineState extends State<_NowPointerGridLine> {
     DateFormat formatter = DateFormat('HH:mm');
 
     return Positioned(
-      top: widget.hourHeight * hourSinceDayStart - widget.hourHeight / 2,
+      top: widget.hourHeight * hourSinceDayStart,
       left: 0,
       width: widget.width,
       height: widget.hourHeight,
@@ -377,7 +377,7 @@ class _NowPointerTimeColumnState extends State<_NowPointerTimeColumn> {
     DateFormat formatter = DateFormat('HH:mm');
 
     return Positioned(
-      top: widget.hourHeight * hourSinceDayStart - widget.hourHeight / 2,
+      top: widget.hourHeight * hourSinceDayStart,
       left: 0,
       width: widget.width,
       height: widget.hourHeight,
