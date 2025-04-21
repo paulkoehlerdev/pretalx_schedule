@@ -15,5 +15,9 @@
   "editInstance": "Bearbeiten: ",
   "eventsOfInterest": "Wähle Events aus, die dich interessieren:",
   "needToReloadEventsError": "Du musst die Events neu laden, bevor du speichern kannst.",
-  "dayText": "Tag "
+  "dayText": "Tag ",
+  "time": "Uhrzeit: ",
+  "duration": "Dauer: ",
+  "track": "Track: ",
+  "location": "Ort: "
 }

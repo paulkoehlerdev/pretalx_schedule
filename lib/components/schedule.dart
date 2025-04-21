@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:linked_scroll_controller/linked_scroll_controller.dart';
 import 'package:pretalx_schedule/api/models/schedule.dart';
+import 'package:pretalx_schedule/components/eventDialog.dart';
 import 'package:pretalx_schedule/extensions/color.dart';
 import 'package:pretalx_schedule/extensions/datetime.dart';
 
@@ -261,7 +262,7 @@ class _ScheduleDay extends StatelessWidget {
                       hourHeight: hourHeight,
                       count: diff + 1,
                     ),
-                    ...generateEvents(actualDayStart),
+                    ...generateEvents(context, actualDayStart),
                     _NowPointerGridLine(
                       dayStart: actualDayStart,
                       dayEnd: actualDayEnd,
@@ -278,7 +279,7 @@ class _ScheduleDay extends StatelessWidget {
     );
   }
 
-  List<Widget> generateEvents(DateTime dayStart) {
+  List<Widget> generateEvents(BuildContext context, DateTime dayStart) {
     List<Widget> out = [];
 
     for (var (index, events) in day.rooms.values.indexed) {
@@ -299,6 +300,16 @@ class _ScheduleDay extends StatelessWidget {
           roomId: index,
           title: event.title,
           trackColor: trackColors[event.track]!,
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return EventDialog(
+                  event: event,
+                );
+              },
+            );
+          },
         ));
       }
     }
@@ -447,6 +458,7 @@ class _EventItem extends StatelessWidget {
   final int roomId;
   final String title;
   final Color trackColor;
+  final VoidCallback? onTap;
 
   const _EventItem({
     super.key,
@@ -458,6 +470,7 @@ class _EventItem extends StatelessWidget {
     required this.roomId,
     required this.title,
     required this.trackColor,
+    this.onTap,
   });
 
   @override
@@ -479,24 +492,27 @@ class _EventItem extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         color: Color.lerp(Theme.of(context).colorScheme.surfaceContainerHigh,
             trackColor, 0.3),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 5,
-              color: trackColor,
-            ),
-            Expanded(
-                child: Padding(
-              padding: const EdgeInsets.only(
-                left: 5.0,
-                right: 5.0,
-                top: 2.5,
+        child: InkWell(
+          onTap: onTap,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 5,
+                color: trackColor,
               ),
-              child: Text(title),
-            )),
-          ],
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.only(
+                  left: 5.0,
+                  right: 5.0,
+                  top: 2.5,
+                ),
+                child: Text(title),
+              )),
+            ],
+          ),
         ),
       ),
     );
