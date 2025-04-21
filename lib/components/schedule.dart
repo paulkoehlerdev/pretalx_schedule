@@ -21,10 +21,15 @@ class _ScheduleState extends State<Schedule> {
   late ScrollController _roomBarController;
   late Map<int, ScrollController> _dayHorizontalControllers;
 
-  final _nowKey = GlobalKey();
-
   static const double _timeBarWidth = 70;
   double _hourHeight = 120;
+  double _baseHourHeight = 120;
+
+  ScrollController _verticalScrollController = ScrollController();
+  double? _scrollAlignment = null;
+
+  static const double _minHourHeight = 60;
+  static const double _maxHourHeight = 180;
 
   @override
   void initState() {
@@ -61,21 +66,49 @@ class _ScheduleState extends State<Schedule> {
           roomWidth: roomWidth,
         ),
         Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                ...widget.schedule.conference.days
-                    .map(
-                      (day) => _ScheduleDay(
-                        controller: _dayHorizontalControllers[day.index]!,
-                        timeBarWidth: _timeBarWidth,
-                        roomWidth: roomWidth,
-                        hourHeight: _hourHeight,
-                        day: day,
-                      ),
-                    )
-                    .toList(),
-              ],
+          child: GestureDetector(
+            onScaleStart: (v) {
+              _baseHourHeight = _hourHeight;
+              if (_verticalScrollController.hasClients &&
+                  _verticalScrollController.position.maxScrollExtent > 0) {
+                _scrollAlignment = _verticalScrollController.offset /
+                    _verticalScrollController.position.maxScrollExtent;
+              }
+            },
+            onScaleUpdate: (details) {
+              setState(() {
+                _hourHeight = (_baseHourHeight * details.scale)
+                    .clamp(_minHourHeight, _maxHourHeight);
+              });
+
+              // After the setState completes, restore the scroll position
+              if (_scrollAlignment != null &&
+                  _verticalScrollController.hasClients) {
+                double targetOffset = _scrollAlignment! *
+                    _verticalScrollController.position.maxScrollExtent;
+                _verticalScrollController.jumpTo(targetOffset);
+              }
+            },
+            onScaleEnd: (details) {
+              _scrollAlignment = null; // Reset the stored scroll position
+            },
+            child: SingleChildScrollView(
+              controller: _verticalScrollController,
+              child: Column(
+                children: [
+                  ...widget.schedule.conference.days
+                      .map(
+                        (day) => _ScheduleDay(
+                          controller: _dayHorizontalControllers[day.index]!,
+                          timeBarWidth: _timeBarWidth,
+                          roomWidth: roomWidth,
+                          hourHeight: _hourHeight,
+                          day: day,
+                        ),
+                      )
+                      .toList(),
+                ],
+              ),
             ),
           ),
         )
