@@ -19,5 +19,6 @@
   "time": "Uhrzeit: ",
   "duration": "Dauer: ",
   "track": "Track: ",
-  "location": "Ort: "
+  "location": "Ort: ",
+  "close": "Schließen"
 }

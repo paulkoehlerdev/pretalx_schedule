@@ -17,6 +17,20 @@ class EventDialog extends StatelessWidget {
     final DateFormat format = DateFormat('HH:mm EEE, d. MMM yyyy');
 
     return AlertDialog(
+      actionsPadding: const EdgeInsets.only(
+        top: 5.0,
+        bottom: 5.0,
+        right: 15,
+        left: 15,
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(AppLocalizations.of(context)!.close.toUpperCase()),
+        ),
+      ],
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,

@@ -19,5 +19,6 @@
   "time": "Time: ",
   "duration": "Duration: ",
   "track": "Track: ",
-  "location": "Location: "
+  "location": "Location: ",
+  "close": "Close"
 }
