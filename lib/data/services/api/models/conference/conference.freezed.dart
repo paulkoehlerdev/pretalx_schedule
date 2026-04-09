@@ -729,7 +729,6 @@ Track _$TrackFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Track {
   String get name => throw _privateConstructorUsedError;
-  String? get slug => throw _privateConstructorUsedError;
   String? get color => throw _privateConstructorUsedError;
 
   /// Serializes this Track to a JSON map.
@@ -746,7 +745,7 @@ abstract class $TrackCopyWith<$Res> {
   factory $TrackCopyWith(Track value, $Res Function(Track) then) =
       _$TrackCopyWithImpl<$Res, Track>;
   @useResult
-  $Res call({String name, String? slug, String? color});
+  $Res call({String name, String? color});
 }
 
 /// @nodoc
@@ -765,7 +764,6 @@ class _$TrackCopyWithImpl<$Res, $Val extends Track>
   @override
   $Res call({
     Object? name = null,
-    Object? slug = freezed,
     Object? color = freezed,
   }) {
     return _then(_value.copyWith(
@@ -773,10 +771,6 @@ class _$TrackCopyWithImpl<$Res, $Val extends Track>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      slug: freezed == slug
-          ? _value.slug
-          : slug // ignore: cast_nullable_to_non_nullable
-              as String?,
       color: freezed == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
@@ -792,7 +786,7 @@ abstract class _$$TrackImplCopyWith<$Res> implements $TrackCopyWith<$Res> {
       __$$TrackImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, String? slug, String? color});
+  $Res call({String name, String? color});
 }
 
 /// @nodoc
@@ -809,7 +803,6 @@ class __$$TrackImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? name = null,
-    Object? slug = freezed,
     Object? color = freezed,
   }) {
     return _then(_$TrackImpl(
@@ -817,10 +810,6 @@ class __$$TrackImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      slug: freezed == slug
-          ? _value.slug
-          : slug // ignore: cast_nullable_to_non_nullable
-              as String?,
       color: freezed == color
           ? _value.color
           : color // ignore: cast_nullable_to_non_nullable
@@ -832,7 +821,7 @@ class __$$TrackImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$TrackImpl implements _Track {
-  const _$TrackImpl({required this.name, this.slug, this.color});
+  const _$TrackImpl({required this.name, this.color});
 
   factory _$TrackImpl.fromJson(Map<String, dynamic> json) =>
       _$$TrackImplFromJson(json);
@@ -840,13 +829,11 @@ class _$TrackImpl implements _Track {
   @override
   final String name;
   @override
-  final String? slug;
-  @override
   final String? color;
 
   @override
   String toString() {
-    return 'Track(name: $name, slug: $slug, color: $color)';
+    return 'Track(name: $name, color: $color)';
   }
 
   @override
@@ -855,13 +842,12 @@ class _$TrackImpl implements _Track {
         (other.runtimeType == runtimeType &&
             other is _$TrackImpl &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.slug, slug) || other.slug == slug) &&
             (identical(other.color, color) || other.color == color));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, name, slug, color);
+  int get hashCode => Object.hash(runtimeType, name, color);
 
   /// Create a copy of Track
   /// with the given fields replaced by the non-null parameter values.
@@ -880,17 +866,13 @@ class _$TrackImpl implements _Track {
 }
 
 abstract class _Track implements Track {
-  const factory _Track(
-      {required final String name,
-      final String? slug,
-      final String? color}) = _$TrackImpl;
+  const factory _Track({required final String name, final String? color}) =
+      _$TrackImpl;
 
   factory _Track.fromJson(Map<String, dynamic> json) = _$TrackImpl.fromJson;
 
   @override
   String get name;
-  @override
-  String? get slug;
   @override
   String? get color;
 

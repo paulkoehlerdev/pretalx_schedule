@@ -1,4 +1,3 @@
-// day.dart
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pretalx_schedule/data/services/api/models/person/person.dart';
 import 'package:pretalx_schedule/data/services/api/models/reference/reference.dart';

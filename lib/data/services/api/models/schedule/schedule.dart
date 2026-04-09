@@ -1,4 +1,3 @@
-// schedule.dart
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pretalx_schedule/data/services/api/models/conference/conference.dart';
 

@@ -69,13 +69,11 @@ Map<String, dynamic> _$$ColorsImplToJson(_$ColorsImpl instance) =>
 
 _$TrackImpl _$$TrackImplFromJson(Map<String, dynamic> json) => _$TrackImpl(
       name: json['name'] as String,
-      slug: json['slug'] as String?,
       color: json['color'] as String?,
     );
 
 Map<String, dynamic> _$$TrackImplToJson(_$TrackImpl instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'slug': instance.slug,
       'color': instance.color,
     };

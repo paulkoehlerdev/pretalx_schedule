@@ -1,4 +1,3 @@
-// conference.dart
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:pretalx_schedule/data/services/api/models/room/room.dart';
 import 'package:pretalx_schedule/data/services/api/models/talk/talk.dart';
@@ -45,7 +44,6 @@ class Colors with _$Colors {
 class Track with _$Track {
   const factory Track({
     required String name,
-    String? slug,
     String? color,
   }) = _Track;
 
